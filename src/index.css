@@ -1,5 +1,38 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+
+/* css for dashboard */
+
+.dashboard {
+    width: 80%;
+    margin: auto;
+    margin-top: 5em
+}
+
+.high {
+    height: 50em;
+}
+
+
+/* css for Tile */
+
+.square {
+    height: 4em;
+    width: 4em;
+    margin: 0.1em;
+}
+
+.wall {
+    background-color: #00BCD4;
+}
+
+
+/* css for button */
+
+.center-vertical {
+    margin-top: 22em;
 }

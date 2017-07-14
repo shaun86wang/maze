@@ -24,10 +24,29 @@ body {
     height: 4em;
     width: 4em;
     margin: 0.1em;
+    padding: 0;
+    overflow: hidden;
 }
 
-.wall {
-    background-color: #00BCD4;
+.ripple-effect {
+    animation-name: ripple-animation;
+    animation-duration: 0.2s;
+    height: 100%;
+    width: 100%;
+    background-color: #80DEEA;
+}
+
+@keyframes ripple-animation {
+    from {
+        transform: scale(0.2);
+        opacity: 0.4;
+        border-radius: 50%;
+    }
+    to {
+        transform: scale(2);
+        opacity: 1;
+        border-radius: 50%
+    }
 }
 
 

@@ -8,7 +8,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import RaisedButton from 'material-ui/RaisedButton';
 import ArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
-import {fullWhite, cyan500} from 'material-ui/styles/colors';
+import {fullWhite, cyan500, cyan200} from 'material-ui/styles/colors';
 
 
 const tileTypes = [2,0,0,0,1,0,0,0,0,0,
@@ -37,7 +37,7 @@ const stepsList = [
 
 class Tile extends React.Component {
 	setStyle = () => {
-        if(this.props.id === this.props.currentStepsList[this.props.currentStepsList.length-1]){
+        if(this.isCurrent()){
             return ('current')
         } else if (this.props.currentStepsList.slice(0,this.props.currentStepsList.length-1).includes(this.props.id)){
             return ('previous')
@@ -45,13 +45,15 @@ class Tile extends React.Component {
             return ('#00BCD4')
         }
     }
+    isCurrent = () => this.props.id === this.props.currentStepsList[this.props.currentStepsList.length-1]
     isWall = () => this.props.type === 1
     style = {backgroundColor: this.setStyle()}
     render(){
   	    return (
                 <Paper zDepth={this.isWall() ? 5 : 1} 
-                    className="col-sm-1 square text-center"
+                    className={`col-sm-1 square text-center  ${this.isCurrent() ? 'animated pulse' : ''}`}
                     style={this.style}>
+                    <div className={this.isCurrent() ? 'ripple-effect' : ''}></div>
                 </Paper>
   	        
         )

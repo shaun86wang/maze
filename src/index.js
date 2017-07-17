@@ -2,13 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
-import AppBar from "material-ui/AppBar"
-import Paper from 'material-ui/Paper'
+import AppBar from "material-ui/AppBar";
+import Slider from 'material-ui/Slider';
+import Paper from 'material-ui/Paper';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import RaisedButton from 'material-ui/RaisedButton';
 import ArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
-import {fullWhite, cyan500, cyan200} from 'material-ui/styles/colors';
+import {fullWhite, cyan200} from 'material-ui/styles/colors';
 
 
 const tileTypes = [2,0,0,0,1,0,0,0,0,0,
@@ -30,30 +31,39 @@ const stepsList = [
     [0,1,2],
     [0,1],
     [0],
-    [0,11],
-    [0,11,21],
-    [0,11,21,31]
+    [0,10],
+    [0,10,20],
+    [0,10,20,30]
 ]
 
 class Tile extends React.Component {
-	setStyle = () => {
-        if(this.isCurrent()){
+	setClass = () => {
+        if(this.isStart()){
+            return ('start')
+        } else if (this.isFinish()){
+            return ('finish')
+        } else if(this.isCurrent()){
             return ('current')
         } else if (this.props.currentStepsList.slice(0,this.props.currentStepsList.length-1).includes(this.props.id)){
             return ('previous')
         } else if (this.isWall()){
-            return ('#00BCD4')
+            return ('wall')
         }
     }
     isCurrent = () => this.props.id === this.props.currentStepsList[this.props.currentStepsList.length-1]
     isWall = () => this.props.type === 1
-    style = {backgroundColor: this.setStyle()}
+    isLast = () => (this.props.lastLocation == this.props.id) && !(this.isFinish() || this.isStart())
+    isStart = () => this.props.type === 2
+    isFinish = () => this.props.type === 3
+    
     render(){
   	    return (
                 <Paper zDepth={this.isWall() ? 5 : 1} 
                     className={`col-sm-1 square text-center  ${this.isCurrent() ? 'animated pulse' : ''}`}
-                    style={this.style}>
-                    <div className={this.isCurrent() ? 'ripple-effect' : ''}></div>
+                    >
+                    <div  zDepth={1} className={`${this.setClass()} ${this.isLast() ? 'reverse-ripple' : ''}`}>
+                        
+                    </div>
                 </Paper>
   	        
         )
@@ -64,9 +74,9 @@ class Tile extends React.Component {
 
 
 
-const Slider = (props) => {
+const BottomSlider = (props) => {
   	return (
-  	<input type="range" min="0" max={props.totalNumberOfSteps-1} value={props.currentStepNumber} onChange={(e)=>props.setStepNumber(Number(e.target.value))}/>
+  	<Slider min={0} max={props.totalNumberOfSteps-1} step={1} value={props.currentStepNumber} onChange={(e, v)=>props.setStepNumber(Number(v))}/>
     )
   
 }
@@ -121,12 +131,17 @@ class Dashboard extends React.Component{
     state = {
         currentStepNumber: 3,
         stepsList: stepsList,
+        previousLocaiton: null,
     };
     retrieveCurrentStepsList = () => this.state.stepsList[this.state.currentStepNumber];
   
     setStepNumber = (num) => {
-        this.setState({
-            currentStepNumber: num,
+        this.setState(prevState => {
+            let prevList = prevState.stepsList;
+            let prevNum = prevState.currentStepNumber;
+            let prevSteps = prevList[prevNum];
+            return {currentStepNumber: num, 
+                    previousLocaiton: prevSteps[prevSteps.length-1]}
         })
     };
   
@@ -135,8 +150,10 @@ class Dashboard extends React.Component{
   
     getTotalNumberOfSteps = () => this.state.stepsList.length
 
+   
+
     render(){
-  	var {currentStepNumber, stepsList} = this.state;
+  	var {currentStepNumber, stepsList, previousLocaiton} = this.state;
     return (
         <div className="dashboard">
         <div className="row">
@@ -156,7 +173,7 @@ class Dashboard extends React.Component{
                         totalNumberOfSteps={this.getTotalNumberOfSteps()}/>
                 </div>
                 {tileTypes.map((type, index) =>
-                        <Tile key={index} type={type} id={index} 
+                        <Tile key={index} type={type} id={index} lastLocation={previousLocaiton}
                         currentStepsList={this.retrieveCurrentStepsList()}/>)}
                 </div>
             </div>
@@ -165,7 +182,7 @@ class Dashboard extends React.Component{
             </div>
         </div>
             <div className="row">
-            <Slider totalNumberOfSteps={this.getTotalNumberOfSteps()} 
+            <BottomSlider totalNumberOfSteps={this.getTotalNumberOfSteps()} 
                     setStepNumber={this.setStepNumber} 
                     currentStepNumber={currentStepNumber}/>
             </div>

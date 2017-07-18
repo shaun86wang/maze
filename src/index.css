@@ -30,7 +30,7 @@ body {
 
 .current {
     animation-name: ripple-animation;
-    animation-duration: 0.2s;
+    animation-duration: 0.4s;
     height: 100%;
     width: 100%;
     background-color: #80DEEA;
@@ -81,7 +81,7 @@ body {
 
 .reverse-ripple {
     animation-name: ripple-animation;
-    animation-duration: 0.2s;
+    animation-duration: 0.4s;
     animation-direction: reverse;
 }
 
@@ -90,4 +90,12 @@ body {
 
 .center-vertical {
     margin-top: 22em;
+}
+
+
+/* css for tabs */
+
+.box {
+    background-color: #80DEEA;
+    height: 40em;
 }

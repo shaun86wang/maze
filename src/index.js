@@ -5,11 +5,16 @@ import registerServiceWorker from './registerServiceWorker';
 import AppBar from "material-ui/AppBar";
 import Slider from 'material-ui/Slider';
 import Paper from 'material-ui/Paper';
+import {Tabs, Tab} from 'material-ui/Tabs';
+import SwipeableViews from 'react-swipeable-views';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import RaisedButton from 'material-ui/RaisedButton';
 import ArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import {fullWhite, cyan200} from 'material-ui/styles/colors';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
+injectTapEventPlugin();
 
 
 const tileTypes = [2,0,0,0,1,0,0,0,0,0,
@@ -23,7 +28,7 @@ const tileTypes = [2,0,0,0,1,0,0,0,0,0,
                     0,0,1,0,0,0,1,0,1,0,
                     1,0,0,0,1,0,1,0,0,0,
                     0,0,1,3,1,0,0,0,1,0];
-const stepsList = [
+const stepsList = [[
     [0],
     [0,1],
     [0,1,2],
@@ -34,6 +39,15 @@ const stepsList = [
     [0,10],
     [0,10,20],
     [0,10,20,30]
+],
+[
+    [0],
+    [0,10],
+    [0,10,20],
+    [0,10,20,30],
+    [0,10,20,30,40],
+    [0,10,20,30,40,50]
+]
 ]
 
 class Tile extends React.Component {
@@ -105,55 +119,85 @@ class Button extends React.Component {
 
 const Step = (props) => {
 	return (
-  	<li>{props.step}</li>)
+  	<Paper>
+          {props.id}. {props.step}
+      </Paper>)
 }
 
 const Steps = (props) => {
 	return(
-        <ol>
-            {props.currentStepsList.map((step, index) => 
-                <Step step={step} key={index}/>
-            )}
-        </ol>
+        <div>
+        {props.currentStepsList.map((step, index) => 
+                <Step step={step} key={index} id={index}/>
+        )}
+        </div>
   	)
 }
 
-const Tabs = (props) => {
-	return(
+
+class TabSwitch extends React.Component {
+    handleChange = (value) => {
+        this.props.toggleMethod();
+        this.props.setStepNumber(0);
+    };
+    render(){
+        
+        return(
         <div>
-        <h3>{props.dataStructureName}</h3>
-        <Steps currentStepsList={props.currentStepsList} />
+            <Tabs
+                onChange={this.handleChange}
+                value={this.props.method}
+            >
+                <Tab label="Stack" value={0} />
+                <Tab label="Queue" value={1}/>
+            </Tabs>
+            <SwipeableViews className="box"
+                index = {this.props.method}
+                onChangeIndex={this.handleChange}
+            >
+                <div><Steps currentStepsList={this.props.currentStepsList}></Steps></div>
+                <div><Steps currentStepsList={this.props.currentStepsList}></Steps></div>
+            </SwipeableViews>
         </div>
     )
+    }
+	
 }
 
 class Dashboard extends React.Component{
     state = {
+        method: 1,
         currentStepNumber: 3,
         stepsList: stepsList,
         previousLocaiton: null,
     };
-    retrieveCurrentStepsList = () => this.state.stepsList[this.state.currentStepNumber];
+    retrieveCurrentStepsList = () => this.state.stepsList[this.state.method][this.state.currentStepNumber];
   
     setStepNumber = (num) => {
         this.setState(prevState => {
-            let prevList = prevState.stepsList;
+            let prevList = prevState.stepsList[this.state.method];
             let prevNum = prevState.currentStepNumber;
             let prevSteps = prevList[prevNum];
             return {currentStepNumber: num, 
                     previousLocaiton: prevSteps[prevSteps.length-1]}
         })
     };
+
+    toggleMethod = () => {
+        this.setState(prevState => {
+            return {method: prevState.method === 0 ? 1 : 0}
+        })
+    }
   
     tiles = tileTypes.map((type, index) =>
           <Tile key={index} type={type} id={index} currentStepsList={this.retrieveCurrentStepsList()}/>);
   
-    getTotalNumberOfSteps = () => this.state.stepsList.length
+    getTotalNumberOfSteps = () => this.state.stepsList[this.state.method].length
 
    
 
     render(){
-  	var {currentStepNumber, stepsList, previousLocaiton} = this.state;
+  	var {currentStepNumber,method, previousLocaiton} = this.state;
     return (
         <div className="dashboard">
         <div className="row">
@@ -178,7 +222,8 @@ class Dashboard extends React.Component{
                 </div>
             </div>
             <div className="col-sm-3 text-center pull-right">
-            <Tabs dataStructureName="Stack" currentStepsList={this.retrieveCurrentStepsList()} />
+            <TabSwitch currentStepsList={this.retrieveCurrentStepsList()} setStepNumber={this.setStepNumber} method={method}
+                toggleMethod={this.toggleMethod} />
             </div>
         </div>
             <div className="row">

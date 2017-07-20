@@ -13,7 +13,12 @@ import ArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
 import {fullWhite, cyan200} from 'material-ui/styles/colors';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import { CSSTransitionGroup } from 'react-transition-group'
+import { CSSTransitionGroup } from 'react-transition-group';
+import Dialog from 'material-ui/Dialog';
+import FlatButton from 'material-ui/FlatButton';
+import TextField from 'material-ui/TextField';
+import Snackbar from 'material-ui/Snackbar';
+
 
 injectTapEventPlugin();
 
@@ -29,7 +34,7 @@ const tileTypes = [2,0,0,0,1,0,0,0,0,0,
                     0,0,1,0,0,0,1,0,1,0,
                     1,0,0,0,1,0,1,0,0,0,
                     0,0,1,3,1,0,0,0,1,0];
-const stepsList = [
+const stepsListString = `[
     [
         [
             [0],
@@ -63,7 +68,56 @@ const stepsList = [
             [20,30]
         ]
     ]
-]
+]`
+
+class Modal extends React.Component {
+  state = {
+    open: true,
+    content: stepsListString,
+  };
+
+
+  handleClose = () => {
+    this.setState({
+        open: false
+        });
+    this.props.updateStepsList(eval(this.state.content));
+  };
+
+  render() {
+    const actions = [
+      <FlatButton
+        label="Submit"
+        primary={true}
+        onTouchTap={this.handleClose}
+      />,
+    ];
+
+    return (
+      <div>
+        <Dialog
+          title="Upload Path Solution"
+          actions={actions}
+          modal={false}
+          open={this.state.open}
+          onRequestClose={this.handleClose}
+        >
+          Please paste in the path solution data and click Submit.
+          Or click Submit directly to use the default solution.
+          <br/>
+          <TextField
+            fullWidth={true}
+            hintText="a string of three dimentional list"
+            defaultValue={this.state.content}
+            multiLine={true}
+            rows={6}
+            onChange={(e, v)=>this.setState({content: v})}
+            />
+        </Dialog>
+      </div>
+    );
+  }
+}
 
 class Tile extends React.Component {
 	setClass = () => {
@@ -83,11 +137,12 @@ class Tile extends React.Component {
     isWall = () => this.props.type === 1
     isStart = () => this.props.type === 2
     isFinish = () => this.props.type === 3
+    isFinal = () => this.isFinish() && this.props.gameWon() ? "animated tada" : ''
     
     render(){
   	    return (
                 <Paper zDepth={this.isWall() ? 5 : 1} 
-                    className={`col-sm-1 square text-center  ${this.isCurrent() ? 'animated pulse' : ''}`}
+                    className={`col-sm-1 square text-center  ${this.isCurrent() ? 'animated pulse' : ''} ${this.isFinal()}`}
                     >
                     <div  zDepth={1} className={this.setClass()}>
                         
@@ -203,11 +258,15 @@ class Dashboard extends React.Component{
     state = {
         method: 0,
         currentStepNumber: 3,
-        stepsList: stepsList,
+        stepsList: eval(stepsListString),
     };
     retrieveCurrentStepsList = () => this.state.stepsList[this.state.method][0][this.state.currentStepNumber];
     retrieveCurrentDataStructure = () => this.state.stepsList[this.state.method][this.state.method][this.state.currentStepNumber]
   
+    updateStepsList = (list) => {
+        this.setState({stepsList: list})
+    }
+
     setStepNumber = (num) => {
         this.setState({currentStepNumber: num}
         )
@@ -218,6 +277,8 @@ class Dashboard extends React.Component{
             return {method: prevState.method === 0 ? 1 : 0}
         })
     }
+
+    gameWon = () => this.state.currentStepNumber == this.getTotalNumberOfSteps() - 1
   
     tiles = tileTypes.map((type, index) =>
           <Tile key={index} type={type} id={index} currentStepsList={this.retrieveCurrentStepsList()}/>);
@@ -230,6 +291,7 @@ class Dashboard extends React.Component{
   	var {currentStepNumber,method} = this.state;
     return (
         <div className="dashboard">
+        <Modal updateStepsList={this.updateStepsList}/>
         <div className="row">
             <div className="col-sm-7">
             <div className="row">
@@ -248,7 +310,8 @@ class Dashboard extends React.Component{
                 </div>
                 {tileTypes.map((type, index) =>
                         <Tile key={index} type={type} id={index}
-                        currentStepsList={this.retrieveCurrentStepsList()}/>)}
+                        currentStepsList={this.retrieveCurrentStepsList()}
+                        gameWon={this.gameWon}/>)}
                 </div>
             </div>
             <div className="col-sm-3 text-center pull-right">
@@ -261,7 +324,10 @@ class Dashboard extends React.Component{
                     setStepNumber={this.setStepNumber} 
                     currentStepNumber={currentStepNumber}/>
             </div>
-        
+            <Snackbar
+                open={this.gameWon()}
+                message="Maze Solved"
+                autoHideDuration={4000} />        
         </div>
     );
   };

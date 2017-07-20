@@ -8,7 +8,9 @@
     "react-dom": "^15.6.1",
     "react-scripts": "1.0.10",
     "react-swipeable-views": "^0.12.4",
-    "react-tap-event-plugin": "^2.0.1"
+    "react-tap-event-plugin": "^2.0.1",
+    "react-toastr": "^2.8.2",
+    "react-transition-group": "^1.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

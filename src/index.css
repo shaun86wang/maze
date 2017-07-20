@@ -79,12 +79,6 @@ body {
     }
 }
 
-.reverse-ripple {
-    animation-name: ripple-animation;
-    animation-duration: 0.4s;
-    animation-direction: reverse;
-}
-
 
 /* css for button */
 
@@ -98,4 +92,65 @@ body {
 .box {
     background-color: #80DEEA;
     height: 40em;
+}
+
+
+/* css for step */
+
+.step {
+    margin: auto;
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+    width: 50%;
+}
+
+.step-enter {
+    opacity: 0.01;
+    transform: translateX(-20%);
+}
+
+.step-enter-active {
+    opacity: 1;
+    -webkit-transition: opacity 500ms ease-out;
+    -moz-transition: opacity 500ms ease-out;
+    transition: opacity 500ms ease-out;
+    animation: slide-in 500ms ease-out forwards;
+}
+
+@keyframes slide-in {
+    from {
+        transform: translateX(-20%);
+    }
+    to {
+        transform: translateX(0%);
+    }
+}
+
+.step-leave {
+    opacity: 1;
+    transform: translateX(0%);
+}
+
+.step-leave-active {
+    opacity: 0.01;
+    -webkit-transition: opacity 500ms ease-out;
+    -moz-transition: opacity 500ms ease-out;
+    transition: opacity 500ms ease-out;
+    animation: slide-out 500ms ease-out forwards;
+}
+
+@keyframes slide-out {
+    from {
+        transform: translateX(0%);
+    }
+    to {
+        transform: translateX(20%)
+    }
+}
+
+
+/* css for steps */
+
+.steps {
+    margin: auto;
 }

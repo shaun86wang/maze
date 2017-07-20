@@ -11,6 +11,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import RaisedButton from 'material-ui/RaisedButton';
 import ArrowForward from 'material-ui/svg-icons/navigation/arrow-forward';
 import ArrowBack from 'material-ui/svg-icons/navigation/arrow-back';
+import Place from 'material-ui/svg-icons/maps/place';
 import {fullWhite, cyan200} from 'material-ui/styles/colors';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { CSSTransitionGroup } from 'react-transition-group';
@@ -74,14 +75,25 @@ class Modal extends React.Component {
   state = {
     open: true,
     content: stepsListString,
+    error: false,
   };
 
 
   handleClose = () => {
-    this.setState({
-        open: false
-        });
-    this.props.updateStepsList(eval(this.state.content));
+      if (/\s*\[\s*\[\s*\[(\s*\[.+\]\,?\s*)+\]\s*\,\s*\[\s*\]\s*\]\s*\,\s*\[\s*\[(\s*\[.+\]\,?\s*)+\]\s*\,\s*\[(\s*\[.+\]\,?\s*)+\]\s*\]\s*\]\s*/gm.test(this.state.content)){
+        this.setState({
+            open: false,
+            error: false,
+            });
+        this.props.updateStepsList(eval(this.state.content));
+      } else {
+        this.setState({
+            error: true,
+        })
+      }
+    
+      
+    
   };
 
   render() {
@@ -111,6 +123,7 @@ class Modal extends React.Component {
             defaultValue={this.state.content}
             multiLine={true}
             rows={6}
+            errorText={this.state.error ? "Please enter corret format" : ""}
             onChange={(e, v)=>this.setState({content: v})}
             />
         </Dialog>
@@ -337,7 +350,7 @@ const App = () => {
     return (
         <MuiThemeProvider>
             <div>
-                <AppBar  title="The Maze" />
+                <AppBar  title="The Maze" iconElementLeft={<Place color={fullWhite} className="place"></Place>}/>
                 <Dashboard />
             </div>
         </MuiThemeProvider>

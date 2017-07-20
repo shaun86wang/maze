@@ -5,6 +5,13 @@ body {
 }
 
 
+/* css for appbar */
+
+.place {
+    margin-top: 10px;
+}
+
+
 /* css for dashboard */
 
 .dashboard {

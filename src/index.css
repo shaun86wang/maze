@@ -15,22 +15,22 @@ body {
 /* css for dashboard */
 
 .dashboard {
-    width: 110em;
+    width: 90vw;
     margin: auto;
-    margin-top: 5em
+    margin-top: 3vh;
 }
 
 .high {
-    height: 50em;
+    height: 75vh;
 }
 
 
 /* css for Tile */
 
 .square {
-    height: 4em;
-    width: 4em;
-    margin: 0.1em;
+    height: 3.2vw;
+    width: 3.2vw;
+    margin: 0.1vw;
     padding: 0;
     overflow: hidden;
 }
@@ -89,8 +89,8 @@ body {
 
 /* css for button */
 
-.center-vertical {
-    margin-top: 22em;
+.button {
+    margin-top: 35vh;
 }
 
 
@@ -98,7 +98,7 @@ body {
 
 .box {
     background-color: #80DEEA;
-    height: 40em;
+    height: 65vh;
 }
 
 

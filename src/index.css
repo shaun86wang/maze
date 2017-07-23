@@ -116,7 +116,7 @@ body {
     transform: translateX(-20%);
 }
 
-.step-enter-active {
+.step-enter-active .step-enter{
     opacity: 1;
     -webkit-transition: opacity 500ms ease-out;
     -moz-transition: opacity 500ms ease-out;

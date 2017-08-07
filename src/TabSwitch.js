@@ -5,7 +5,7 @@ import Steps from './Steps';
 
 export default class TabSwitch extends React.Component {
     handleChange = (value) => {
-        this.props.toggleMethod();
+        this.props.setMethod(value);
         this.props.setStepNumber(0);
     };
     render(){
@@ -18,11 +18,13 @@ export default class TabSwitch extends React.Component {
             >
                 <Tab label="Stack" value={0} />
                 <Tab label="Queue" value={1}/>
+                <Tab label="Heap" value={2} />
             </Tabs>
             <SwipeableViews className="box"
                 index = {this.props.method}
                 onChangeIndex={this.handleChange}
             >
+                <div><Steps currentStepsList={this.props.currentStepsList}></Steps></div>
                 <div><Steps currentStepsList={this.props.currentStepsList}></Steps></div>
                 <div><Steps currentStepsList={this.props.currentStepsList}></Steps></div>
             </SwipeableViews>

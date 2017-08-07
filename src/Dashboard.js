@@ -21,16 +21,18 @@ export default class Dashboard extends React.Component{
 
     retrieveCurrentStepsList = () => this.state.stepsList[this.state.method][0][this.state.currentStepNumber]
 
-    retrieveCurrentDataStructure = () => this.state.stepsList[this.state.method][this.state.method][this.state.currentStepNumber];
+    retrieveCurrentDataStructure = () => this.state.stepsList[this.state.method][1][this.state.currentStepNumber];
+        
+    
   
     updateStepsList = (list) => this.setState({stepsList: list})
 
 
     setStepNumber = (num) => this.setState({currentStepNumber: num})
 
-    toggleMethod = () => {
-        this.setState(prevState => {
-            return {method: prevState.method === 0 ? 1 : 0}
+    setMethod = (m) => {
+        this.setState({
+            method: m
         })
     }
 
@@ -72,7 +74,7 @@ export default class Dashboard extends React.Component{
                     <TabSwitch currentStepsList={this.retrieveCurrentDataStructure()} 
                                 setStepNumber={this.setStepNumber} 
                                 method={method}
-                                toggleMethod={this.toggleMethod} />
+                                setMethod={this.setMethod} />
                 </div>
             </div>
             <div className="row">
@@ -86,5 +88,5 @@ export default class Dashboard extends React.Component{
                 autoHideDuration={4000} />        
         </div>
     );
-  };
+    };
 }
